@@ -18,6 +18,7 @@ import android.graphics.PaintFlagsDrawFilter;
 import android.util.DisplayMetrics;
 import android.view.SurfaceHolder;
 
+
 /**
  * 游戏控制类，负责游戏整体的逻辑调度
  * @author Tiga <liangkangabc@gmail.com>
@@ -27,7 +28,8 @@ public class Game {
 	
 	/** 根据 z 坐标排序 */
 	private static List<ScreenItem> sortedItems;
-	
+	private static Ball ball;
+	private static Hoop hoop;
 	public static void init(Activity activity) {
 		
 		/** 根据屏幕实际参数，初始化所有距离相关的常量 */
@@ -41,8 +43,10 @@ public class Game {
 		sortedItems = new ArrayList<ScreenItem>();
 		sortedItems.add(Background.getInstance());
 		sortedItems.add(Backboard.getInstance());
-		sortedItems.add(Hoop.getInstance());
-		sortedItems.add(new Ball());
+		hoop = Hoop.getInstance();
+		sortedItems.add(hoop);
+		ball = new Ball();
+		sortedItems.add(ball);
 	}
 	
 	public static void refreshScreen(SurfaceHolder surfaceHolder, Canvas canvas,
@@ -72,6 +76,18 @@ public class Game {
 		Collections.sort(sortedItems);
 	}
 	
+	public static boolean isFlying(){
+		/**
+		 * 球在飞行时不容许拨动球
+		 */
+		return ball.isStart();
+	}
+	public static void startBall(float x, float y) {
+		/**
+		 * 设置球飞出的初始速度
+		 */
+		ball.ballStart(x, y);
+	}
 	/**
 	 * 定义了游戏的很多全局常量，如视野内三围维空间的坐标范围
 	 */
@@ -105,5 +121,30 @@ public class Game {
 		public static float BALL_RADIUS;
 		/** 可见3维区域的 z 坐标范围，最远即为篮板的 z 坐标，最近即为篮球初始位置 */
 		public static float FARTHEST, NEAREST;
+		
+	}
+	
+	public static boolean isInBall(float x, float y) {
+		/**
+		 * 如果坐标点落在ball上，返回true
+		 */
+		return (x-ball.getX())*(x-ball.getX())+(y-ball.getY())*(y-ball.getY())<Constant.BALL_RADIUS*Constant.BALL_RADIUS;
+	}
+	
+	public static boolean isInBlackboard(float x, float y){
+		/**
+		 * 如果坐标点落在blackboard上，返回true
+		 */
+		return (Math.abs(x-Game.Constant.BACKBOARD_X)<Game.Constant.BACKBOARD_WIDHT/2f)
+				 &&(Math.abs(y-Game.Constant.BACKBOARD_Y)<Game.Constant.BACKBOARD_HEIGHT/2f);
+	}
+	public static boolean isBallHitBlackboard(float x, float y, float ball_radius){
+		return (Math.abs(x-Game.Constant.BACKBOARD_X)<Game.Constant.BACKBOARD_WIDHT/2f+ball_radius)
+				 &&(Math.abs(y-Game.Constant.BACKBOARD_Y)<Game.Constant.BACKBOARD_HEIGHT/2f+ball_radius);
+	}
+
+	public static void setHoodFrame(int frame) {
+		// TODO Auto-generated method stub
+		hoop.setFrame(frame);
 	}
 }

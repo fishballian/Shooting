@@ -42,6 +42,10 @@ public class Hoop extends ScreenItem {
 		
 		currentFrame = 0;
 	}
+	
+	public void setFrame(int frame){
+		currentFrame = frame;
+	}
 
 	@Override
 	public void draw(Canvas canvas, Paint paint) {

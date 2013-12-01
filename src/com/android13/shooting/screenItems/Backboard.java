@@ -42,4 +42,5 @@ public class Backboard extends ScreenItem {
 	public void draw(Canvas canvas, Paint paint) {
 		canvas.drawBitmap(bmps[0], x - bmpWidth / 2, y - bmpHeight / 2, paint);
 	}
+	
 }
